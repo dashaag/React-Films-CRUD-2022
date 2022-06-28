@@ -1,0 +1,16 @@
+.films-list {
+    display: flex;
+}
+
+.btns {
+    display: flex;
+    margin-top: auto;
+}
+
+.col {
+    height: 450px;
+}
+
+.card > img {
+    object-fit: cover;
+}
