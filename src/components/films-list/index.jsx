@@ -4,6 +4,7 @@ import { Button, Row } from 'react-bootstrap';
 import './index.css';
 import FilmCard from '../film-card';
 import AddFilmModal from '../add-film-modal';
+import UpdateFilmModal from '../update-film-modal';
 
 const filmsDB = [
     {
@@ -66,6 +67,11 @@ const FilmsList = _ => {
     const FILMS_KEY = 'FILMS';
     const [films, setFilms] = useState(JSON.parse(localStorage.getItem(FILMS_KEY)) ?? []);
     const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [activeFilm, setActiveFilm] = useState({
+        name: '',
+        image: ''
+    });
 
     useEffect(() => {
         if (!localStorage.getItem(FILMS_KEY)) {
@@ -81,6 +87,13 @@ const FilmsList = _ => {
         setLocalStorageValue(newArray);
     }
 
+    const updateFilm = updatedFilm => {
+        const newArray = films.map(x => updatedFilm.id === x.id ? updatedFilm : x);
+        
+        setFilms(newArray);
+        setLocalStorageValue(newArray);
+    }
+
     const addFilm = film => {
         const newArray = [...films, film];
 
@@ -90,6 +103,11 @@ const FilmsList = _ => {
 
     const setLocalStorageValue = value => {
         localStorage.setItem(FILMS_KEY, JSON.stringify(value));
+    }
+
+    const openUpdateModal = film => {
+        setActiveFilm(film);
+        setShowUpdateModal(true);
     }
 
     return (
@@ -105,6 +123,7 @@ const FilmsList = _ => {
                 {
                     films.map(film =>
                         <FilmCard
+                            handleOpen={_ => openUpdateModal(film)}
                             film={film}
                             deleteFilm={() => deleteFilm(film.id)} />
                     )
@@ -114,6 +133,11 @@ const FilmsList = _ => {
                 show={showModal}
                 addFilm={addFilm}
                 handleClose={_ => setShowModal(false)} />
+            <UpdateFilmModal
+                show={showUpdateModal}
+                updateFilm={updateFilm}
+                activeFilm={activeFilm}
+                handleClose={_ => setShowUpdateModal(false)} />
         </>
     )
 }
